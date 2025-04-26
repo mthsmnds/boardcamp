@@ -4,7 +4,8 @@
   "main": "app.js",
   "type": "module",
   "scripts": {
-    "test": "src /app.js"
+    "start": "src/app.js",
+    "dev": "nodemon src/app.js"
   },
   "keywords": [],
   "author": "Matheus Mendes Falcão",
@@ -16,7 +17,8 @@
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "joi": "^17.13.3",
-    "jsonwebtoken": "^9.0.2"
+    "jsonwebtoken": "^9.0.2",
+    "pg": "^8.15.6"
   },
   "devDependencies": {
     "nodemon": "^3.1.10"
