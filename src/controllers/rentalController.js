@@ -1,21 +1,25 @@
-import { db } from "../database/dbConnection"
+import { db } from "../database/dbConnection.js"
+import { addRentalService, deleteRentalService, getRentalService, returnRentalService } from "../services/rentalServices.js";
 
 export async function getRentals(req, res){
     try {
-        const rentals = await db.query(`SELECT * FROM rentals;`);
-        res.send(rentals.rows);
-    } catch (error) {
-        res.status(500).send(error.message)
+        const result = await getRentalService();
         
-    }
-}
+        const rentals = result.rows.map(rental =>({
+            id: rental.id,
+            customerId: rental.customerId,
+            gameId: rental.gameId,
+            rentDate: rental.rentDate,
+            daysRented: rental.daysRented,
+            returnDate: rental.returnDate,
+            originalPrice: rental.originalPrice,
+            delayFee: rental.delayFee,
+            customer: {id: rental.customerId, name: rental.customerName},
+            game: {id: rental.gameId, name: rental.gameName},
+        }));
 
+        res.send(rentals)
 
-export async function getRentals_Id(req, res){
-    const {id} = req.params; 
-    try {
-        const rental = await db.query(`SELECT * FROM rentals WHERE id=$1;`, [id]);
-        res.send(rental.rows[0]);
     } catch (error) {
         res.status(500).send(error.message)
         
@@ -24,13 +28,10 @@ export async function getRentals_Id(req, res){
 
 
 export async function addRentals(req, res){
-    const {customerId, gameId, daysRented} = req.body
+
     try {
-        await db.query(`
-            INSERT INTO rentals (customerID, gameId, daysRented)
-                VALUES ($1, $2, $3);
-                `,[customerId, gameId, daysRented]);
-        res.sendStatus(201);
+        const result = await addRentalService(req.body);
+        res.status(201).send(result.rows);
         
     } catch (error) {
         res.status(500).send(error.message)
@@ -41,8 +42,8 @@ export async function addRentals(req, res){
 export async function deleteRentals(req, res){
     const {id} = req.params;
     try {
-        await db.query(`DELETE FROM rentals WHERE id=$1`, [id])
-        res.sendStatus(204);
+        await deleteRentalService(id);
+        res.sendStatus(200);
     } catch (error) {
         res.status(500).send(error.message)
         
@@ -51,13 +52,9 @@ export async function deleteRentals(req, res){
 
 export async function returnRentals(req, res){
     const {id} = req.params;
-    const {returnDate, delayFee} = req.body;
     try {
-        await db.query(`
-            UPDATE rentals SET returnDate=$1, delayFee=$2
-                WHERE id=$3;
-            `,[returnDate, delayFee, id]);
-            res.sendStatus(200);
+        await returnRentalService(id);
+        res.sendStatus(200);
     } catch (error) {
         res.status(500).send(error.message)
         

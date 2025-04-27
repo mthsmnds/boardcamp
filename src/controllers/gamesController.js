@@ -1,7 +1,10 @@
+
+import { addGamesService, getGamesService } from "../services/gamesServices.js";
+
 export async function getGames(req, res){
     try {
-        const games = await db.query(`SELECT * FROM games;`);
-        res.send(games.rows);
+        const result = await getGamesService();
+        res.send(result.rows);
     } catch (error) {
         res.status(500).send(error.message)
         
@@ -10,13 +13,15 @@ export async function getGames(req, res){
 
 
 export async function addGames(req, res){
-    const {name, image, stockTotal, pricePerDay} = req.body
+
     try {
-        await db.query(`
-            INSERT INTO games (name, image, stockTotal, pricePerDay)
-                VALUES ($1, $2, $3, $4);
-                `,[name, image, stockTotal, pricePerDay]);
-        res.sendStatus(201);
+        const result = await addGamesService(req.body);
+        
+        if (result === null){
+            return res.status(409).send("Um jogo com esse nome já está cadastrado");
+        }
+
+        res.status(201).send(result);
         
     } catch (error) {
         res.status(500).send(error.message)

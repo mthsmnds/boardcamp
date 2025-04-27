@@ -1,36 +1,39 @@
-export async function getCustomers(req, res){
+import { addCustomerService, getCustomerIdService, getCustomerService } from "../services/customersServices.js";
+
+export async function getCustomers(req, res) {
     try {
-        const customers = await db.query(`SELECT * FROM customers;`);
-        res.send(customers.rows);
+        const result = await getCustomerService();
+        res.send(result.rows);
     } catch (error) {
         res.status(500).send(error.message)
-        
+
     }
 }
 
-export async function getCustomer_Id(req, res){
-    const {id} = req.params; 
+export async function getCustomer_Id(req, res) {
+    const { id } = req.params;
     try {
-        const customer = await db.query(`SELECT * FROM customers WHERE id=$1;`, [id]);
-        res.send(customer.rows[0]);
+        const result = await getCustomerIdService(id);
+        if(result === null) res.status(404).send("Nenhum usuário com este ID encontrado")
+
+        res.send(result.rows);
     } catch (error) {
         res.status(500).send(error.message)
-        
+
     }
 }
 
-
-export async function addCustomers(req, res){
-    const {name, phone, cpf} = req.body
+export async function addCustomers(req, res) {
     try {
-        await db.query(`
-            INSERT INTO customers (name, phone, cpf)
-                VALUES ($1, $2, $3);
-                `,[name, phone, cpf]);
-        res.sendStatus(201);
-        
+        const result = await addCustomerService(req.body)
+        if (result === null) {
+            return res.status(409).send("Esse CPF já está cadastrado");
+        }
+
+        res.status(201).send(result);
+
     } catch (error) {
         res.status(500).send(error.message)
-        
+
     }
 }

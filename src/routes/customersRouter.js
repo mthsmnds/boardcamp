@@ -10,4 +10,4 @@ customersRouter.get("/customers/:id", getCustomer_Id);
 
 customersRouter.post("/customers", validateSchema(customerSchema), addCustomers);
 
-export default rentalRouter;
+export default customersRouter;
