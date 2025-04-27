@@ -1,29 +1,17 @@
-import { db } from "../database/dbConnection.js"
+import { addGamesRepo, getGamesByNameRepo, getGamesRepo } from "../repositories/gamesRepo.js";
 
 export async function addGamesService({name, image, stockTotal, pricePerDay}){
 
-    const conflict = await db.query(`SELECT * FROM games WHERE name =$1`, [name]);
-    if(conflict.rowCount !== 0) return null;
+    const conflict = await getGamesByNameRepo();
+    if(conflict.rowCount !== 0){
+      throw{type:"conflictName", message:"Jogo com esse nome já cadastrado"}
+    };
 
-    const result = await db.query(`
-        INSERT INTO games (name, image, "stockTotal", "pricePerDay")
-            VALUES ($1, $2, $3, $4) RETURNING id;
-        `,
-        [name, image, stockTotal, pricePerDay]);
-    
-    const idGame = result.rows[0].id;
-
-    return {
-        id: idGame,
-        name,
-        image,
-        stockTotal,
-        pricePerDay
-    }
-    
+  const result = await addGamesRepo(name, image, stockTotal, pricePerDay);
+  return result;
 }
 
 export async function getGamesService(){
-    const games = await db.query(`SELECT * FROM games;`);
-    return games;
+    const result = await getGamesRepo();
+    return result;
 }
