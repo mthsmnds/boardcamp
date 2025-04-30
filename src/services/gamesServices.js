@@ -2,10 +2,10 @@ import { addGamesRepo, getGamesByNameRepo, getGamesRepo } from "../repositories/
 
 export async function addGamesService({name, image, stockTotal, pricePerDay}){
 
-    const conflict = await getGamesByNameRepo();
-    if(conflict.rowCount !== 0){
-      throw{type:"conflictName", message:"Jogo com esse nome já cadastrado"}
-    };
+     const conflict = await getCustomerCpfRepo(name);
+     if (conflict){
+         throw{type:"conflictName", message:"Jogo com esse nome já cadastrado"}
+     };
 
   const result = await addGamesRepo(name, image, stockTotal, pricePerDay);
   return result;

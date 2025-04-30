@@ -6,9 +6,10 @@ export async function getGamesRepo(){
 }
 
 export async function getGamesByNameRepo(name){
- const result = await db.query(`SELECT * FROM games WHERE name =$1`, [name]);
- return result;
- }
+    const result = await db.query(`SELECT * FROM games WHERE name=$1;`, [name]);
+    if(result.rowCount === 0) return null;
+    return result;
+}
  
 export async function getGamesByIdRepo(id){
  const result = await db.query(`SELECT * FROM games WHERE id =$1`, [id]);

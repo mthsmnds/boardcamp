@@ -1,5 +1,4 @@
 import express, { json } from "express";
-import "express-async-errors";
 import cors from "cors";
 import dotenv from "dotenv";
 import customersRouter from "./routes/customersRouter.js";

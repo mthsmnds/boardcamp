@@ -2,7 +2,7 @@ import { addCustomerRepo, getCustomerCpfRepo, getCustomerIdRepo, getCustomerRepo
 
 export async function addCustomerService({ name, phone, cpf }) {
     const conflict = await getCustomerCpfRepo(cpf);
-    if (!conflict){
+    if (conflict){
         throw{type:"conflictCPF", message:"Usuário com esse CPF já cadastrado"}
     };
 
