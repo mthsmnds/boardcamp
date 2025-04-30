@@ -22,7 +22,7 @@ export async function getRentals(req, res){
 
 export async function addRentals(req, res){
         const result = await addRentalService(req.body);
-        res.status(201).send(result.rows);
+        res.status(201).send(result);
         
 }
 
