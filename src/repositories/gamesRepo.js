@@ -13,7 +13,7 @@ export async function getGamesByNameRepo(name){
  
 export async function getGamesByIdRepo(id){
  const result = await db.query(`SELECT * FROM games WHERE id =$1`, [id]);
- return result;
+ return result.rows[0];
  }
 
 export async function addGamesRepo(name, image, stockTotal, pricePerDay){

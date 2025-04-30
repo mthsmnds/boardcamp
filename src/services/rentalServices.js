@@ -14,17 +14,19 @@ export async function addRentalService({customerId, gameId, daysRented}){
     }
 
     const customerResult = await getCustomerIdRepo(customerId); 
+    console.log("customerResult", customerResult);
     if(!customerResult){                                                         
         throw{type:"notFound_Customer", message:"Cliente não encontrado"};                            
     }
 
-    const gameResult = await getGamesByIdRepo(gameId);  
-    if(!gameResult){                                            
+    const game = await getGamesByIdRepo(gameId);  
+    console.log("game", game)
+    if(!game){                                            
         throw{type:"notFound_Game", message:"Jogo não encontrado"};                     
     }
 
-    const game = gameResult.rows[0];                                                                                          
-    const rentedCount = await getRentalValidRepo(gameId);                                                                                                                                                                                   
+    const rentedCount = await getRentalValidRepo(gameId);     
+    console.log("rentedCount", rentedCount)                                                                                                                                                                              
     if(rentedCount >= game.stockTotal){                                                                                      
         throw{type:"notAvaiable", message:"Jogo sem estoque para aluguel"};                                        
     }

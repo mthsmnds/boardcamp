@@ -7,8 +7,7 @@ export async function getCustomerRepo(){
 
 export async function getCustomerIdRepo(id){
     const result = await db.query(`SELECT * FROM customers WHERE id=$1;`, [id]);
-    if(result.rowCount === 0) return null;
-    return result;
+    return result.rows[0];
 }
 
 export async function getCustomerCpfRepo(cpf){
